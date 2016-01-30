@@ -62,8 +62,8 @@ public class MovieGui extends JFrame {
 	 */
 	public static void main(String[] args) {
 		ma = new MovieListActions();
-		ma.addMovieList("The Martian", 2015, "PG-13", 141, "Ridley Scott");
-		ma.addMovieTable("Inside Out", 2015, "PG", 94, "Pete Doctor and Ronnie del Carmen");
+		//ma.addMovieList("The Martian", 2015, "PG-13", 141, "Ridley Scott");
+		//ma.addMovieTable("Inside Out", 2015, "PG", 94, "Pete Doctor and Ronnie del Carmen");
 		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -81,7 +81,7 @@ public class MovieGui extends JFrame {
 	 * Create the frame.
 	 */
 	public MovieGui() {
-		setTitle("Movie Database");
+		setTitle("Movie List");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 700, 467);
 		contentPane = new JPanel();
@@ -210,22 +210,22 @@ public class MovieGui extends JFrame {
 		
 		movieTitleLbl = new JLabel("Movie Title: ");
 		movieTitleLbl.setEnabled(false);
-		movieTitleLbl.setBounds(10, 8, 58, 14);
+		movieTitleLbl.setBounds(10, 8, 147, 14);
 		panel.add(movieTitleLbl);
 		
 		ratingLbl = new JLabel("Rating:");
 		ratingLbl.setEnabled(false);
-		ratingLbl.setBounds(167, 8, 35, 14);
+		ratingLbl.setBounds(167, 8, 70, 14);
 		panel.add(ratingLbl);
 		
 		durationLbl = new JLabel("Duration:");
 		durationLbl.setEnabled(false);
-		durationLbl.setBounds(167, 66, 45, 14);
+		durationLbl.setBounds(167, 66, 70, 14);
 		panel.add(durationLbl);
 		
 		directorsLbl = new JLabel("Directors:");
 		directorsLbl.setEnabled(false);
-		directorsLbl.setBounds(247, 8, 47, 14);
+		directorsLbl.setBounds(247, 8, 157, 14);
 		panel.add(directorsLbl);
 		
 		durationField = new JTextField();
@@ -253,7 +253,7 @@ public class MovieGui extends JFrame {
 		directorsField.setColumns(10);
 		
 		yearLbl = new JLabel("Release year: ");
-		yearLbl.setBounds(12, 66, 70, 14);
+		yearLbl.setBounds(12, 66, 145, 14);
 		panel.add(yearLbl);
 		yearLbl.setEnabled(false);
 		
@@ -417,12 +417,15 @@ public class MovieGui extends JFrame {
 		lblActions.setBounds(10, 261, 46, 14);
 		contentPane.add(lblActions);
 		
-		lblEdit = new JLabel("Edit");
+		lblEdit = new JLabel("Add/Edit");
 		lblEdit.setEnabled(false);
 		lblEdit.setBounds(260, 261, 46, 14);
 		contentPane.add(lblEdit);
 	}
 	
+	/**
+	 * Toggles the add/edit fields
+	 */
 	public void toggleFields() {
 		if(movieTitleField.isEnabled()) {
 			durationField.setEnabled(false);
@@ -453,6 +456,10 @@ public class MovieGui extends JFrame {
 		}
 	}
 	
+	/**
+	 * Validates the data for the add/edit fields
+	 * @return
+	 */
 	public boolean validateData() {
 		String finalWarning = "Please enter";
 		String warning = "";
