@@ -1,5 +1,5 @@
 /**
- * Stephen Calabro
+ * @author Stephen Calabro
  * steve.a.calabro@gmail.com
  * CS338:GUI Assignment 1
  */

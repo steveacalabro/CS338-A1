@@ -1,3 +1,8 @@
+/**
+ * @author Stephen Calabro
+ * steve.a.calabro@gmail.com
+ * CS338:GUI Assignment 1
+ */
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
