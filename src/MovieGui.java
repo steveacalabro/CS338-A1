@@ -8,6 +8,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -80,26 +81,13 @@ public class MovieGui extends JFrame {
 	 * Create the frame.
 	 */
 	public MovieGui() {
+		setTitle("Movie Database");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 700, 467);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
-		leftBtn = new JButton("<-");
-		leftBtn.setEnabled(false);
-		leftBtn.setBounds(319, 109, 45, 23);
-		contentPane.add(leftBtn);
-		
-		rightBtn = new JButton("->");
-		rightBtn.setEnabled(false);
-		rightBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		rightBtn.setBounds(319, 143, 45, 23);
-		contentPane.add(rightBtn);
 		
 		//List Stuff
 		ArrayList<Movie> movieList = ma.getMovieList();
@@ -122,7 +110,7 @@ public class MovieGui extends JFrame {
             @Override
             public void valueChanged(ListSelectionEvent arg0) {
                 if (!arg0.getValueIsAdjusting()) {
-                	leftBtn.setEnabled(true);
+                	leftBtn.setEnabled(false);
                 	rightBtn.setEnabled(true);
                 	btnAdd.setEnabled(true);
                 	btnChange.setEnabled(true);
@@ -145,7 +133,7 @@ public class MovieGui extends JFrame {
 		Object[][] tableData = new Object[movieTable.size()][5];
 		
 		for(int i = 0; i < movieTable.size(); i ++) {
-			Movie m = movieList.get(i);
+			Movie m = movieTable.get(i);
 			tableData[i][0] = m.movieTitle();
 			tableData[i][1] = m.year();
 			tableData[i][2] = m.rating();
@@ -174,7 +162,7 @@ public class MovieGui extends JFrame {
 	    table.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
 	        public void valueChanged(ListSelectionEvent event) {
 	        	leftBtn.setEnabled(true);
-            	rightBtn.setEnabled(true);
+            	rightBtn.setEnabled(false);
             	btnAdd.setEnabled(true);
             	btnChange.setEnabled(true);
             	removeBtn.setEnabled(true);
@@ -182,6 +170,38 @@ public class MovieGui extends JFrame {
 	    });
 	    scrollPane.setViewportView(table);
 		
+	    leftBtn = new JButton("<-");
+		leftBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Movie m = movieTable.get(selectedTable);
+				movieList.add(m);
+				
+				listModel.addElement(m.movieTitle() + ", " + m.year() + ", " + m.rating() + ", " + m.duration() + ", " + m.directors());
+				
+				movieTable.remove(selectedTable);
+				dtm.removeRow(selectedTable);
+			}
+		});
+		leftBtn.setEnabled(false);
+		leftBtn.setBounds(319, 109, 45, 23);
+		contentPane.add(leftBtn);
+		
+		rightBtn = new JButton("->");
+		rightBtn.setEnabled(false);
+		rightBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Movie m = movieList.get(selectedList);
+				
+				movieTable.add(m);
+				Object[] newMovie = {m.movieTitle(), m.year(), m.rating(), m.duration(), m.directors()};
+				dtm.addRow(newMovie);
+	
+				movieList.remove(selectedList);
+				listModel.remove(selectedList);
+			}
+		});
+		rightBtn.setBounds(319, 143, 45, 23);
+		contentPane.add(rightBtn);
 		
 		JPanel panel = new JPanel();
 		panel.setBounds(260, 282, 414, 135);
@@ -246,6 +266,9 @@ public class MovieGui extends JFrame {
 		cancelBtn = new JButton("Cancel");
 		cancelBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				if(btnChange.getText() == "Save") {
+					btnChange.setText("Change");
+				}
 				toggleFields();
 			}
 		});
@@ -263,7 +286,26 @@ public class MovieGui extends JFrame {
 		panel_1.add(btnAdd);
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				toggleFields();
+				if(btnAdd.getText() == "Add Movie") {
+					btnAdd.setText("Save");
+					toggleFields();
+				} else {
+					//This is when the new movie is Saved
+					btnAdd.setText("Add Movie");
+					
+					if(validateData() == true) {
+						Movie m = new Movie(movieTitleField.getText(), releaseField.getText(), ratingField.getText(), durationField.getText(), directorsField.getText());
+						movieList.add(m);
+						listModel.addElement(m.movieTitle() + ", " + m.year() + ", " + m.rating() + ", " + m.duration() + ", " + m.directors());
+						
+						movieTitleField.setText("");
+						durationField.setText("");
+						releaseField.setText("");
+						ratingField.setText("");
+						directorsField.setText("");
+						toggleFields();
+					}
+				}
 			}
 		});
 		
@@ -273,10 +315,75 @@ public class MovieGui extends JFrame {
 				if(btnChange.getText() == "Change") {
 					btnChange.setText("Save");
 					toggleFields();
+					
+					if(selectedList == -1) {
+						Movie m = movieTable.get(selectedTable);
+						
+						//Gotta fill those fileds first
+						movieTitleField.setText(m.movieTitle());
+						durationField.setText(Integer.toString(m.duration()));
+						releaseField.setText(Integer.toString(m.year()));
+						ratingField.setText(m.rating());
+						directorsField.setText(m.directors());
+					} else {
+						Movie m = movieList.get(selectedList);
+						
+						//Gotta fill those fileds first
+						movieTitleField.setText(m.movieTitle());
+						durationField.setText(Integer.toString(m.duration()));
+						releaseField.setText(Integer.toString(m.year()));
+						ratingField.setText(m.rating());
+						directorsField.setText(m.directors());
+					}
 				} else {
 					//Saving the new Data
 					btnChange.setText("Change");
-					toggleFields();
+					
+					if(selectedList == -1) {
+						//Add to table
+						if(validateData() == true) {
+							Movie m = movieTable.get(selectedTable);
+							m.movieTitle(movieTitleField.getText());
+							m.year(releaseField.getText());
+							m.rating(ratingField.getText());
+							m.duration(durationField.getText());
+							m.directors(directorsField.getText());
+							
+							movieTable.set(selectedTable, m);
+							dtm.setValueAt(m.movieTitle(), selectedTable, 0);
+							dtm.setValueAt(m.year(), selectedTable, 1);
+							dtm.setValueAt(m.rating(), selectedTable, 2);
+							dtm.setValueAt(m.duration(), selectedTable, 3);
+							dtm.setValueAt(m.directors(), selectedTable, 4);
+							
+							movieTitleField.setText("");
+							durationField.setText("");
+							releaseField.setText("");
+							ratingField.setText("");
+							directorsField.setText("");
+							toggleFields();
+						}
+					} else {
+						//Add to list
+						if(validateData() == true) {
+							Movie m = movieList.get(selectedList);
+							m.movieTitle(movieTitleField.getText());
+							m.year(releaseField.getText());
+							m.rating(ratingField.getText());
+							m.duration(durationField.getText());
+							m.directors(directorsField.getText());
+							
+							movieList.set(selectedList, m);
+							listModel.setElementAt(m.movieTitle() + ", " + m.year() + ", " + m.rating() + ", " + m.duration() + ", " + m.directors(), selectedList);
+							
+							movieTitleField.setText("");
+							durationField.setText("");
+							releaseField.setText("");
+							ratingField.setText("");
+							directorsField.setText("");
+							toggleFields();
+						}
+					}
 				}
 			}
 		});
@@ -330,12 +437,6 @@ public class MovieGui extends JFrame {
 			yearLbl.setEnabled(false);
 			cancelBtn.setEnabled(false);
 			lblEdit.setEnabled(false);
-			
-			movieTitleField.setText("");
-			durationField.setText("");
-			releaseField.setText("");
-			ratingField.setText("");
-			directorsField.setText("");
 		} else {
 			durationField.setEnabled(true);
 			movieTitleField.setEnabled(true);
@@ -350,5 +451,61 @@ public class MovieGui extends JFrame {
 			cancelBtn.setEnabled(true);
 			lblEdit.setEnabled(true);
 		}
+	}
+	
+	public boolean validateData() {
+		String finalWarning = "Please enter";
+		String warning = "";
+		int count = 0;
+		boolean status = true;
+		
+		if(movieTitleField.getText() == "" || movieTitleField.getText().isEmpty()) {
+			warning+= "a movie Title";
+			count++;
+			status = false;
+		}
+		if(durationField.getText() == "" || durationField.getText().isEmpty()) {
+			if(count > 0) {
+				warning+= ", ";
+			}
+			warning+= "a duration";
+			count++;
+			status = false;
+		}				
+		if(releaseField.getText() == "" || releaseField.getText().isEmpty()) {
+			if(count > 0) {
+				warning+= ", ";
+			}
+			warning+= "a release year";
+			count++;
+			status = false;
+		}
+		if(ratingField.getText() == "" || ratingField.getText().isEmpty()) {
+			if(count > 0) {
+				warning+= ", ";
+			}
+			warning+= "a rating";
+			count++;
+			status = false;
+		}
+		if(directorsField.getText() == "" || directorsField.getText().isEmpty()) {
+			if(count > 0) {
+				warning+= ", ";
+			}
+			warning+= "(a) director(s)";
+			count++;
+			status = false;
+		}
+		
+		if(count > 1) {
+			finalWarning = finalWarning + ", ";
+		} 
+		
+		if(status == false) {
+			finalWarning= finalWarning + warning;
+			JOptionPane.showMessageDialog(null, finalWarning);
+		}
+		
+		return status;
 	}
 }

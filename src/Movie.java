@@ -26,12 +26,28 @@ public class Movie {
 		directors = _directors;
 	}
 	
+	public Movie(String _movieTitle, String _year, String _rating, String _duration, String _directors) {
+		movieTitle = _movieTitle;
+		year = Integer.parseInt(_year);
+		rating = _rating;
+		duration = Integer.parseInt(_duration);
+		directors = _directors;
+	}
+	
 	/**
 	 * Getter for movieTitle
 	 * @return
 	 */
 	public String movieTitle() {
 		return movieTitle;
+	}
+	
+	/**
+	 * Setter for movieTitle
+	 * @param _movieTitle
+	 */
+	public void movieTitle(String _movieTitle) {
+		movieTitle = _movieTitle;
 	}
 	
 	/**
@@ -43,11 +59,27 @@ public class Movie {
 	}
 	
 	/**
+	 * Setter for year
+	 * @param _year
+	 */
+	public void year(String _year) {
+		year = Integer.parseInt(_year);
+	}
+	
+	/**
 	 * Getter for rating
 	 * @return
 	 */
 	public String rating() {
 		return rating;
+	}
+	
+	/**
+	 * Setter for rating
+	 * @param _rating
+	 */
+	public void rating(String _rating) {
+		rating = _rating;
 	}
 	
 	/**
@@ -59,11 +91,27 @@ public class Movie {
 	}
 	
 	/**
+	 * Setter for duration
+	 * @param _duration
+	 */
+	public void duration(String _duration) {
+		duration = Integer.parseInt(_duration);
+	}
+	
+	/**
 	 * Getter for directors
 	 * @return
 	 */
 	public String directors() {
 		return directors;
+	}
+	
+	/**
+	 * Setter for directors
+	 * @param _directors
+	 */
+	public void directors(String _directors) {
+		directors = _directors;
 	}
 	
 	/**
