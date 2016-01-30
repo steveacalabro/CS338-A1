@@ -414,12 +414,12 @@ public class MovieGui extends JFrame {
 		removeBtn.setEnabled(false);
 		
 		JLabel lblActions = new JLabel("Actions");
-		lblActions.setBounds(10, 261, 46, 14);
+		lblActions.setBounds(10, 261, 240, 14);
 		contentPane.add(lblActions);
 		
 		lblEdit = new JLabel("Add/Edit");
 		lblEdit.setEnabled(false);
-		lblEdit.setBounds(260, 261, 46, 14);
+		lblEdit.setBounds(260, 261, 414, 14);
 		contentPane.add(lblEdit);
 	}
 	
