@@ -26,6 +26,14 @@ public class Movie {
 		directors = _directors;
 	}
 	
+	/**
+	 * Overloaded constructor to allow for string that will be parsed to ints for year and duration
+	 * @param _movieTitle
+	 * @param _year
+	 * @param _rating
+	 * @param _duration
+	 * @param _directors
+	 */
 	public Movie(String _movieTitle, String _year, String _rating, String _duration, String _directors) {
 		movieTitle = _movieTitle;
 		year = Integer.parseInt(_year);
